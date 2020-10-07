@@ -1,0 +1,20 @@
+apiVersion: network.openshift.io/v1
+kind: EgressNetworkPolicy
+metadata:
+  name: bookinfo-network-policy 
+  namespace: bookinfo
+spec:
+  egress:
+    - to:
+        dnsName: kiali.io
+      type: Allow
+    {{- range $key, $val := .Values.egressAllow}}
+    - to:
+        {{ $key }}: {{ $val | quote }}
+      type: Allow
+    {{- end }}
+    {{- range $key, $val := .Values.egressDeny}}
+    - to:
+        {{ $key }}: {{ $val | quote }}
+      type: Deny 
+    {{- end }}
